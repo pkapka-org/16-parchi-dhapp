@@ -120,6 +120,11 @@ socket.on("fadeInCard", (card) => {
   renderHand();
 });
 
+socket.on("showHand" , ( {playerName, cards }) => {
+  alert('${playerName} hand: ${cards.join(",")}'); 
+});
+
+
 function renderPlayersList() {
   const ul = document.getElementById("playerList");
   ul.innerHTML = "";

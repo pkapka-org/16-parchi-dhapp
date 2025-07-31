@@ -5,7 +5,6 @@ import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Fix for __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -54,7 +53,8 @@ io.on("connection", (socket) => {
 
   socket.on("joinRoom", ({ room, name }) => {
     const R = rooms[room];
-    if (!R || R.started) return socket.emit("badRoom");
+    if (!R) return socket.emit("badRoom");
+
     socket.join(room);
     R.players.push({
       id: socket.id,
@@ -63,19 +63,21 @@ io.on("connection", (socket) => {
       skipNext: false,
       skipRecv: false,
     });
+
     io.to(room).emit(
       "playerList",
       R.players.map((p) => ({ id: p.id, name: p.name }))
     );
 
-
-    // if game has already startted, deal hand to this new plaeyr
-    if (R.deck.length > 0) {
-      for (let i = 0; i < 4; i++){
-        R.players.at(-1).hand.push(R.deck.pop());
+    if (R.started) {
+      const newPlayer = R.players.at(-1);
+      for (let i = 0; i < 4; i++) {
+        if (R.deck.length > 0) {
+          newPlayer.hand.push(R.deck.pop());
+        }
       }
+      io.to(newPlayer.id).emit("hand", newPlayer.hand);
     }
-    io.to(socket.id).emit("hand", R.players.at(-1).hand);
   });
 
   socket.on("startGame", (room) => {
@@ -132,7 +134,7 @@ io.on("connection", (socket) => {
     io.to(room).emit("showHand", {
       playerName: caller.name,
       cards: caller.hand
-    })
+    });
 
     const winner = both.find((p) => {
       const counts = {};

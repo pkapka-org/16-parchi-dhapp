@@ -1,8 +1,7 @@
 {
   "name": "16-parchi-game",
   "version": "1.0.0",
-  "type" : "module",
-  "description": "Multiplayer 16 Parchi Card Game",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
