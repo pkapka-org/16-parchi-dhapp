@@ -67,6 +67,15 @@ io.on("connection", (socket) => {
       "playerList",
       R.players.map((p) => ({ id: p.id, name: p.name }))
     );
+
+
+    // if game has already startted, deal hand to this new plaeyr
+    if (R.deck.length > 0) {
+      for (let i = 0; i < 4; i++){
+        R.players.at(-1).hand.push(R.deck.pop());
+      }
+    }
+    io.to(socket.id).emit("hand", R.players.at(-1).hand);
   });
 
   socket.on("startGame", (room) => {
@@ -119,6 +128,11 @@ io.on("connection", (socket) => {
     const caller = R.players[idx];
     const receiver = R.players[(idx + 1) % R.players.length];
     const both = [caller, receiver];
+
+    io.to(room).emit("showHand", {
+      playerName: caller.name,
+      cards: caller.hand
+    })
 
     const winner = both.find((p) => {
       const counts = {};
