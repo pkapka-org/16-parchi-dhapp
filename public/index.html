@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>16 Parchi Card Game</title>
+  <style>
+    body {
+      background-color: #014d00;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    #table {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      margin: 20px auto;
+      border-radius: 50%;
+      background: #deb887;
+      box-shadow: inset 0 0 30px #a67c00;
+    }
+    .player {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      border: 3px solid transparent;
+      transition: border-color 0.5s ease, box-shadow 0.5s ease;
+      user-select: none;
+    }
+    .player.active {
+      border-color: #ffff00;
+      box-shadow: 0 0 12px 3px #ffff00;
+    }
+    #hand {
+      margin-top: 20px;
+    }
+    .card-btn {
+      display: inline-block;
+      padding: 8px 12px;
+      margin: 5px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.5s;
+      user-select: none;
+      background-color: #fff;
+      color: #000;
+    }
+    .card-btn.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .fade-in {
+      animation: fadein 0.7s ease-in;
+    }
+    .fade-out {
+      animation: fadeout 0.7s ease-out;
+    }
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes fadeout {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    #passBtn {
+      display: none;
+      margin: 10px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #passBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #cheaterNotice {
+      color: #ff4444;
+      font-weight: bold;
+      margin-top: 10px;
+      min-height: 24px;
+    }
+    #lobby input {
+      padding: 5px 8px;
+      font-size: 16px;
+      margin: 5px;
+      border-radius: 4px;
+      border: none;
+      outline: none;
+    }
+    #lobby button {
+      padding: 6px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+      border: none;
+      background-color: #2e7d32;
+      color: white;
+      margin-left: 5px;
+    }
+    #startGameBtn {
+      padding: 8px 16px;
+      margin-top: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+      border: none;
+      background-color: #4caf50;
+      color: white;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>16 Parchi Card Game</h1>
+
+  <div id="lobby">
+    <button onclick="create()">Create Room</button>
+    <br />
+    <textarea id = "cardnames" placeholder = "Enter card names, one per line" rows= "5" style ="width: 300px;"></textarea>
+    <input id="code" placeholder="Room Code" maxlength="6" />
+    <input id="nm" placeholder="Your Name" />
+    <button onclick="join()">Join</button>
+    <div>
+      <h3>Players in room:</h3>
+      <ul id="playerList"></ul>
+    </div>
+    <button id="startGameBtn" onclick="startGame()">Start Game</button>
+  </div>
+
+  <div id="game" style="display:none;">
+    <div id="table"></div>
+    <div id="hand"></div>
+    <button id="passBtn">Pass Selected Card</button>
+    <br>
+    <button id="dhappBtn" style="margin-left:10px;">16 Parchi Dhapp</button>
+    <div id="cheaterNotice"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
